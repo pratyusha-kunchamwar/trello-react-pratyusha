@@ -1,5 +1,8 @@
 import React, { useState } from "react";
 
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
+
 import {
   Button,
   TextField,
@@ -17,17 +20,25 @@ function CreateBoardOrCard({ prop }) {
   const [open, setOpen] = React.useState(false);
   const [boardName, setBoardName] = useState("");
   const [error, setError] = useState(null);
+  const [opensnake, setOpensnake] = useState(false);
 
   const handleClickOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const handleSubmit = () => {
     if (boardName) {
       onCreate(boardName);
+      setOpensnake(true);
       setBoardName("");
       handleClose();
     } else {
       setError("Error in new Board Create", error);
     }
+  };
+  const handleClosebar = (event, reason) => {
+    if (reason == "clickaway") {
+      return;
+    }
+    setOpensnake(false);
   };
 
   return (
@@ -96,15 +107,33 @@ function CreateBoardOrCard({ prop }) {
           >
             Cancel
           </Button>
-          <Button
-            onClick={handleSubmit}
-            variant="contained"
-            sx={{ bgcolor: "#424242", width: "5rem", fontWeight: "bold" }}
-          >
-            Create
-          </Button>
+
+          {/* snakebar */}
+          <div>
+            <Button
+              onClick={handleSubmit}
+              variant="contained"
+              sx={{ bgcolor: "#1769aa", width: "5rem", fontWeight: "bold" }}
+            >
+              Create
+            </Button>
+          </div>
         </DialogActions>
       </Dialog>
+      <Snackbar
+        open={opensnake}
+        autoHideDuration={6000}
+        onClose={handleClosebar}
+      >
+        <Alert
+          onClose={handleClosebar}
+          severity="success"
+          variant="filled"
+          sx={{ width: "100%" }}
+        >
+          {element} created sucessfully
+        </Alert>
+      </Snackbar>
     </React.Fragment>
   );
 }

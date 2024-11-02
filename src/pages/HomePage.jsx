@@ -47,9 +47,11 @@ const HomePage = () => {
         backgroundColor: "black",
         backgroundImage: `url("https://plus.unsplash.com/premium_photo-1683309568772-57011d6c1b7b?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8dG9kb3xlbnwwfHwwfHx8MA%3D%3D")`,
         backgroundSize: "cover",
-        backgroundPosition: "center",
         backgroundAttachment: "fixed",
-        width: "100%",
+        backgroundRepeat: "no-repeat",
+        width: "100vw",
+        height: "100vh",
+        overflow: "hidden",
       }}
     >
       <CreateBoardOrCard
@@ -60,7 +62,8 @@ const HomePage = () => {
           element: "board",
         }}
       />
-      <h1 style={{ color: "black" }}>Boards</h1>
+
+      <h1 style={{ color: "black", marginLeft: "2rem" }}>Boards</h1>
       <AllBoards boards={board} />
     </div>
   );
