@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from "react";
+import axios from "axios";
+
 import CreateBoardOrCard from "./CreateBoardOrCard";
+
 import { Box, Typography } from "@mui/material";
 import RemoveIcon from "@mui/icons-material/Remove";
 import Checkbox from "@mui/material/Checkbox";
-import axios from "axios";
+
 
 const {
   VITE_API_KEY: API_KEY,
@@ -11,10 +14,9 @@ const {
   VITE_BASE_URL: BASE_URL,
 } = import.meta.env;
 
-const CheckedItems = ({ listId }) => {
+const CheckedItems = ({ listId, cardId }) => {
   const [checkedItems, setCheckedItems] = useState([]);
   const [error, setError] = useState(null);
-  const [checkedStates, setCheckedStates] = useState({});
 
   // Fetch items
   const fetchCheckedItems = async () => {
@@ -24,11 +26,6 @@ const CheckedItems = ({ listId }) => {
       );
       const items = response.data;
       setCheckedItems(items);
-      const initialCheckedStates = items.reduce((acc, item) => {
-        acc[item.id] = item.state === "complete";
-        return acc;
-      }, {});
-      setCheckedStates(initialCheckedStates);
     } catch (error) {
       setError(error);
     }
@@ -38,13 +35,6 @@ const CheckedItems = ({ listId }) => {
     fetchCheckedItems();
   }, []);
 
-  // Toggle checked state for individual items
-  const handleChange = (itemId) => {
-    setCheckedStates((prevState) => ({
-      ...prevState,
-      [itemId]: !prevState[itemId],
-    }));
-  };
   // Create items
   const createCheckedItems = async (listName) => {
     try {
@@ -63,6 +53,28 @@ const CheckedItems = ({ listId }) => {
         `${BASE_URL}/checklists/${listId}/checkItems/${itemId}?key=${API_KEY}&token=${TOKEN}`
       );
       fetchCheckedItems();
+    } catch (error) {
+      setError(error);
+    }
+  };
+  //update items
+  const updateCheckItems = async (itemId) => {
+    if (!cardId) {
+      setError("no card id");
+      return;
+    }
+    try {
+      const item = checkedItems.find((item) => item.id === itemId);
+      const state = item.state === "complete" ? "incomplete" : "complete";
+
+      await axios.put(
+        `${BASE_URL}/cards/${cardId}/checkItem/${itemId}?state=${state}&key=${API_KEY}&token=${TOKEN}`
+      );
+      setCheckedItems((prev) =>
+        prev.map((item) =>
+          item.id === itemId ? { ...item, state: state } : item
+        )
+      );
     } catch (error) {
       setError(error);
     }
@@ -89,9 +101,9 @@ const CheckedItems = ({ listId }) => {
                 }}
               >
                 <Checkbox
-                  checked={checkedStates[list.id] || false}
-                  onChange={() => handleChange(list.id)}
                   inputProps={{ "aria-label": "controlled" }}
+                  checked={list.state === "complete"}
+                  onChange={() => updateCheckItems(list.id)}
                 />
                 <Typography variant="body1">{list.name}</Typography>
               </Box>

@@ -120,6 +120,7 @@ const deleteChecklist = async (id) => {
                 </Box>
                 <CheckedItems
                   listId={list.id}
+                  cardId={selectedCard.id}
                   sx={{ border: "2px solid black" }}
                 />
               </>
