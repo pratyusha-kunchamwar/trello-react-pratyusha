@@ -16,6 +16,7 @@ const AllLists = ({ lists, onDelete }) => {
         justifyContent: "center",
         marginTop: "4rem",
         width: "100%",
+        alignItems:"flex-start"
       }}
     >
       {lists.map((list, idx) => (

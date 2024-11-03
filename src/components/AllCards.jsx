@@ -32,6 +32,7 @@ const AllCards = ({ listId }) => {
     setOpen(false);
   };
 
+//to fetch
   const fetchCards = async () => {
     try {
       let response = await axios.get(
@@ -45,8 +46,9 @@ const AllCards = ({ listId }) => {
 
   useEffect(() => {
     fetchCards(listId);
-  }, []);
+  }, [listId]);
 
+  //tocreate
   const createCard = async () => {
     try {
       await axios.post(
