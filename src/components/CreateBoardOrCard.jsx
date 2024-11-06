@@ -1,8 +1,5 @@
 import React, { useState } from "react";
 
-import Snackbar from "@mui/material/Snackbar";
-import Alert from "@mui/material/Alert";
-
 import {
   Button,
   TextField,
@@ -13,6 +10,9 @@ import {
   DialogTitle,
   Box,
 } from "@mui/material";
+
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
 
 function CreateBoardOrCard({ prop }) {
   const { onCreate, heading, label, element, checklist, checkItem } = prop;
@@ -131,7 +131,7 @@ function CreateBoardOrCard({ prop }) {
           variant="filled"
           sx={{ width: "100%" }}
         >
-          {element} created sucessfully
+          {element} name enterd
         </Alert>
       </Snackbar>
     </React.Fragment>
