@@ -7,7 +7,7 @@ import {
 } from "react-router-dom";
 
 import HomePage from "./pages/HomePage";
-import MainLayout from "./Layout/MainLayout";
+import MainLayout from "./layout/MainLayout";
 import EachBoardPage from "./pages/EachBoardPage";
 import ErrorPage from "./pages/ErrorPage";
 

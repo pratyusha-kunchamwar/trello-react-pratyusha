@@ -1,12 +1,11 @@
-import SingleBoard from "../components/SingleBoard";
-
-const AllBoards = ({ boards }) => {
+import SingleBoard from "./SingleBoard"
+const AllBoards = ({ boards = [] }) => {
   return (
     <div
       style={{
         display: "flex",
         gap: "4rem",
-        margin: " 0 6rem",
+        margin: "0 6rem",
         justifyContent: "center",
         flexWrap: "wrap",
       }}
@@ -17,5 +16,4 @@ const AllBoards = ({ boards }) => {
     </div>
   );
 };
-
-export default AllBoards;
+export default AllBoards

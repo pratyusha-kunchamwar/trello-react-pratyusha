@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import React from "react";
-import axios from "axios";
 
 import CardItem from "./CardItem";
 import CardForm from "./CardForm";
@@ -8,12 +7,7 @@ import CheckList from "./CheckList";
 
 import { Box, Button } from "@mui/material";
 import { Add as AddIcon } from "@mui/icons-material";
-
-const {
-  VITE_API_KEY: API_KEY,
-  VITE_TOKEN: TOKEN,
-  VITE_BASE_URL: BASE_URL,
-} = import.meta.env;
+import { getCards, addCards, deleteCards } from "../services/cards";
 
 const AllCards = ({ listId }) => {
   const [cardsName, setCardsName] = useState([]);
@@ -32,13 +26,11 @@ const AllCards = ({ listId }) => {
     setOpen(false);
   };
 
-//to fetch
+  //to fetch
   const fetchCards = async () => {
     try {
-      let response = await axios.get(
-        `${BASE_URL}/lists/${listId}/cards?key=${API_KEY}&token=${TOKEN}`
-      );
-      setCardsName(response.data);
+      let response = await getCards(listId);
+      setCardsName(response);
     } catch (error) {
       setError(error);
     }
@@ -48,12 +40,10 @@ const AllCards = ({ listId }) => {
     fetchCards(listId);
   }, [listId]);
 
-  //tocreate
+  //to create
   const createCard = async () => {
     try {
-      await axios.post(
-        `${BASE_URL}/cards?idList=${listId}&name=${cardName}&key=${API_KEY}&token=${TOKEN}`
-      );
+      await addCards(listId, cardName);
       setIsRunning(false);
       setCardName("");
       fetchCards();
@@ -61,12 +51,10 @@ const AllCards = ({ listId }) => {
       setError(error);
     }
   };
-
+  //to delete
   const deleteCard = async (id) => {
     try {
-      await axios.delete(
-        `${BASE_URL}/cards/${id}?key=${API_KEY}&token=${TOKEN}`
-      );
+      await deleteCards(id);
       fetchCards();
     } catch (error) {
       setError(error);

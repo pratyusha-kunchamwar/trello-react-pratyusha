@@ -1,17 +1,15 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
 
 import CheckedItems from "./CheckedItems";
 import CreateBoardOrCard from "./CreateBoardOrCard";
+import {
+  getCheckList,
+  addCheckList,
+  deleteCheckList,
+} from "../services/checkList";
 
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Box, Typography, Modal } from "@mui/material";
-
-const {
-  VITE_API_KEY: API_KEY,
-  VITE_TOKEN: TOKEN,
-  VITE_BASE_URL: BASE_URL,
-} = import.meta.env;
 
 const CheckList = ({ open, handleClose, selectedCard }) => {
   const [checklist, setChecklist] = useState([]);
@@ -20,10 +18,8 @@ const CheckList = ({ open, handleClose, selectedCard }) => {
   // fetch all checklist-items
   const fetchChecklists = async () => {
     try {
-      const responce = await axios.get(
-        `${BASE_URL}/cards/${selectedCard.id}/checklists?key=${API_KEY}&token=${TOKEN}`
-      );
-      setChecklist(responce.data);
+      const responce = await getCheckList(selectedCard.id);
+      setChecklist(responce);
     } catch (error) {
       setError(error);
     }
@@ -37,20 +33,16 @@ const CheckList = ({ open, handleClose, selectedCard }) => {
   //to create list
   const createChecklist = async (name) => {
     try {
-      await axios.post(
-        `${BASE_URL}/cards/${selectedCard.id}/checklists?name=${name}&key=${API_KEY}&token=${TOKEN}`
-      );
+      await addCheckList(name, selectedCard.id);
       fetchChecklists();
     } catch (error) {
       setError(error);
     }
   };
   //to delete the list
-const deleteChecklist = async (id) => {
+  const deleteChecklist = async (id) => {
     try {
-      await axios.delete(
-        `${BASE_URL}/checklists/${id}?key=${API_KEY}&token=${TOKEN}`
-      );
+      await deleteCheckList(id);
       fetchChecklists();
     } catch (error) {
       setError(error);

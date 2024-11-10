@@ -1,35 +1,29 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
-import AllBoards from "../components/AllBoards";
 import CreateBoardOrCard from "../components/CreateBoardOrCard";
+import AllBoards from "../components/AllBoards";
+import { getBoards,addBoards } from "../services/boards";
 
-const {
-  VITE_API_KEY: API_KEY,
-  VITE_TOKEN: TOKEN,
-  VITE_BASE_URL: BASE_URL,
-} = import.meta.env;
 
 const HomePage = () => {
   const [board, setBoard] = useState([]);
   const [error, setError] = useState([]);
 
-  //fetch boards
+  // fetch boards
   const fetchBoards = async () => {
     try {
-      const responce = await axios.get(
-        `${BASE_URL}/members/me/boards?key=${API_KEY}&token=${TOKEN}`
-      );
-      setBoard(responce.data);
+      const response = await getBoards();
+      setBoard(response);
     } catch (error) {
       setError(error);
+      setBoard([]);
     }
   };
-  //create boards
+
+  // create boards
   const createBoards = async (boardName) => {
     try {
-      await axios.post(`${BASE_URL}/boards?key=${API_KEY}&token=${TOKEN}`, {
-        name: boardName,
-      });
+      await addBoards(boardName);
       fetchBoards();
     } catch (error) {
       setError(error);
@@ -64,7 +58,11 @@ const HomePage = () => {
       />
 
       <h1 style={{ color: "black", marginLeft: "2rem" }}>Boards</h1>
-      <AllBoards boards={board} />
+      {Array.isArray(board) && board.length > 0 ? (
+        <AllBoards boards={board} />
+      ) : (
+        <p>No boards available.</p>
+      )}
     </div>
   );
 };

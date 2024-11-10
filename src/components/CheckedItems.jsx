@@ -1,18 +1,16 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 
 import CreateBoardOrCard from "./CreateBoardOrCard";
+import {
+  getCheckItems,
+  addCheckItems,
+  deleteCheckItems,
+  updateCheckItem,
+} from "../services/checkItems";
 
 import { Box, Typography } from "@mui/material";
 import RemoveIcon from "@mui/icons-material/Remove";
 import Checkbox from "@mui/material/Checkbox";
-
-
-const {
-  VITE_API_KEY: API_KEY,
-  VITE_TOKEN: TOKEN,
-  VITE_BASE_URL: BASE_URL,
-} = import.meta.env;
 
 const CheckedItems = ({ listId, cardId }) => {
   const [checkedItems, setCheckedItems] = useState([]);
@@ -21,11 +19,8 @@ const CheckedItems = ({ listId, cardId }) => {
   // Fetch items
   const fetchCheckedItems = async () => {
     try {
-      const response = await axios.get(
-        `${BASE_URL}/checklists/${listId}/checkItems?key=${API_KEY}&token=${TOKEN}`
-      );
-      const items = response.data;
-      setCheckedItems(items);
+      const response = await getCheckItems(listId);
+      setCheckedItems(response);
     } catch (error) {
       setError(error);
     }
@@ -38,9 +33,7 @@ const CheckedItems = ({ listId, cardId }) => {
   // Create items
   const createCheckedItems = async (listName) => {
     try {
-      await axios.post(
-        `${BASE_URL}/checklists/${listId}/checkItems?name=${listName}&key=${API_KEY}&token=${TOKEN}`
-      );
+      await addCheckItems(listName, listId);
       fetchCheckedItems();
     } catch (error) {
       setError(error);
@@ -49,9 +42,7 @@ const CheckedItems = ({ listId, cardId }) => {
   // Delete items
   const deleteCheckedItems = async (itemId) => {
     try {
-      await axios.delete(
-        `${BASE_URL}/checklists/${listId}/checkItems/${itemId}?key=${API_KEY}&token=${TOKEN}`
-      );
+      await deleteCheckItems(listId, itemId);
       fetchCheckedItems();
     } catch (error) {
       setError(error);
@@ -67,9 +58,7 @@ const CheckedItems = ({ listId, cardId }) => {
       const item = checkedItems.find((item) => item.id === itemId);
       const state = item.state === "complete" ? "incomplete" : "complete";
 
-      await axios.put(
-        `${BASE_URL}/cards/${cardId}/checkItem/${itemId}?state=${state}&key=${API_KEY}&token=${TOKEN}`
-      );
+      await updateCheckItem(cardId, itemId, state);
       setCheckedItems((prev) =>
         prev.map((item) =>
           item.id === itemId ? { ...item, state: state } : item

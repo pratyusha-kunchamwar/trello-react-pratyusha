@@ -1,15 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
-import axios from "axios";
+
 import CreateBoardOrCard from "../components/CreateBoardOrCard";
 import AllLists from "../components/AllLists";
-
-const {
-  VITE_API_KEY: API_KEY,
-  VITE_TOKEN: TOKEN,
-  VITE_BASE_URL: BASE_URL,
-} = import.meta.env;
+import { getLists, addLists, deleteLists } from "../services/lists";
 
 const EachBoardPage = () => {
   const param = useParams();
@@ -19,35 +14,31 @@ const EachBoardPage = () => {
   // Fetch lists
   const fetchAllLists = async () => {
     try {
-      const response = await axios.get(
-        `${BASE_URL}/boards/${param.id}/lists?key=${API_KEY}&token=${TOKEN}`
-      );
-
-      setAllLists(response.data);
+      const response = await getLists(param.id);
+      setAllLists(response);
     } catch (error) {
       setError(error);
     }
   };
+
   useEffect(() => {
     fetchAllLists();
   }, []);
+
   // Create a list
-  const CreateList = async (boardName) => {
+  const CreateList = async (listName) => {
     try {
-      await axios.post(
-        `${BASE_URL}/lists?name=${boardName}&idBoard=${param.id}&key=${API_KEY}&token=${TOKEN}`
-      );
+      await addLists(param.id, listName);
       fetchAllLists();
     } catch (error) {
       setError(error);
     }
   };
+  
   // Delete the list
   const DeleteTheLists = async (listId) => {
     try {
-      await axios.put(
-        `${BASE_URL}/lists/${listId}/closed?value=true&key=${API_KEY}&token=${TOKEN}`
-      );
+      await deleteLists(listId);
       fetchAllLists();
     } catch (error) {
       setError(error);
@@ -56,13 +47,13 @@ const EachBoardPage = () => {
 
   return (
     <div
-    style={{
-      backgroundColor: "#eeeeee",
-      minHeight: "100vh", 
-      width: "100vw",     
-        overflow: "auto",    
-      marginTop:"3rem"
-    }}
+      style={{
+        backgroundColor: "#eeeeee",
+        minHeight: "100vh",
+        width: "100vw",
+        overflow: "auto",
+        marginTop: "3rem",
+      }}
     >
       <CreateBoardOrCard
         prop={{
@@ -70,6 +61,8 @@ const EachBoardPage = () => {
           heading: "Create List",
           label: "List",
           element: "list",
+          checklist: false,
+          checkItem: false,
         }}
       />
       <AllLists lists={allLists} onDelete={DeleteTheLists} />
