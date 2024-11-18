@@ -5,51 +5,56 @@ import { fetchLists, createLists, deleteLists } from "../features/listSlice";
 
 import CreateComponent from "../components/CreateComponent";
 import AllLists from "../components/AllLists";
+import Loader from "../components/Loader";
 
 const EachBoardPage = () => {
   const { id } = useParams();
+  // console.log(id);
   const { isLoading, listsData, error } = useSelector((state) => state.lists);
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(fetchLists(id));
-  }, [dispatch]);
+  }, []);
 
-  if (isLoading) {
-    return <h2>loadingggg</h2>;
-  }
-  if (error) {
-    return <h2>{error}</h2>;
-  }
+
 
   const handleCreateList = (listName) => {
     dispatch(createLists({ listName, id }));
+    dispatch(fetchLists(id));
   };
 
   const handleDeleList = (listId) => {
-    dispatch(deleteLists(listId));
-    dispatch(fetchLists(id));
+    dispatch(deleteLists(listId))
   };
+  let listInfo = listsData[id];
 
   return (
     <div
       style={{
         backgroundColor: "#eeeeee",
         minHeight: "100vh",
+        maxHeight:"100%",
         width: "100vw",
         overflow: "auto",
         marginTop: "3rem",
+        backgroundAttachment:"fixed"
       }}
     >
-      <CreateComponent
-        prop={{
-          onCreate: handleCreateList,
-          heading: "Create List",
-          label: "List",
-          element: "list",
-        }}
-      />
-      {listsData && <AllLists lists={listsData} onDelete={handleDeleList} />}
+      {isLoading ? (<Loader />) : (
+        <>
+          <CreateComponent
+            prop={{
+              onCreate: handleCreateList,
+              heading: "Create List",
+              label: "List",
+              element: "list",
+            }}
+          />
+          {listInfo && <AllLists lists={listInfo} onDelete={handleDeleList} />}
+          
+        </>
+      )}
     </div>
   );
 };

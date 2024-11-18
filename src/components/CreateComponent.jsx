@@ -131,7 +131,7 @@ function CreateComponent({ prop }) {
           variant="filled"
           sx={{ width: "100%" }}
         >
-          {element} created sucessfully
+          {element} name enterd;
         </Alert>
       </Snackbar>
     </React.Fragment>

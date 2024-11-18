@@ -6,8 +6,8 @@ import {
   updateCheckItems,
 } from "../features/checkItemSlice";
 import { useDispatch, useSelector } from "react-redux";
-
 import CreateComponent from "./CreateComponent";
+import Loader from "./Loader";
 
 import { Box, Typography } from "@mui/material";
 import RemoveIcon from "@mui/icons-material/Remove";
@@ -19,6 +19,7 @@ const CheckedItems = ({ checkListId, cardId }) => {
   );
   const dispatch = useDispatch();
 
+  //api calls
   useEffect(() => {
     dispatch(fetchCheckItems(checkListId));
   }, [dispatch, checkListId]);
@@ -44,46 +45,55 @@ const CheckedItems = ({ checkListId, cardId }) => {
 
   return (
     <>
-      <Box>
-        <Box>
-          {checkItemsInfo.map((checkitem) => (
-            <Box
-              key={checkitem.id}
-              sx={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-              }}
-            >
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                }}
-              >
-                <Checkbox
-                  inputProps={{ "aria-label": "controlled" }}
-                  checked={checkitem.state === "complete"}
-                  onChange={() => handleUpdateCheckItem(checkitem.id)}
-                />
-                <Typography variant="body1">{checkitem.name}</Typography>
-              </Box>
-              <RemoveIcon onClick={() => handleDeleteCheckItem(checkitem.id)} />
+      {isLoading ? (
+        <Loader />
+      ) : (
+        <>
+          {" "}
+          <Box>
+            <Box>
+              {checkItemsInfo.map((checkitem) => (
+                <Box
+                  key={checkitem.id}
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                  }}
+                >
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Checkbox
+                      inputProps={{ "aria-label": "controlled" }}
+                      checked={checkitem.state === "complete"}
+                      onChange={() => handleUpdateCheckItem(checkitem.id)}
+                    />
+                    <Typography variant="body1">{checkitem.name}</Typography>
+                  </Box>
+                  <RemoveIcon
+                    onClick={() => handleDeleteCheckItem(checkitem.id)}
+                  />
+                </Box>
+              ))}
             </Box>
-          ))}
-        </Box>
-        <CreateComponent
-          prop={{
-            onCreate: createCheckedItems,
-            heading: "CheckItems",
-            label: "CheckItems Name",
-            element: "Checkitems",
-            checklist: "true",
-            checkItem: "true",
-          }}
-        />
-      </Box>
+            <CreateComponent
+              prop={{
+                onCreate: createCheckedItems,
+                heading: "CheckItems",
+                label: "CheckItems Name",
+                element: "Checkitems",
+                checklist: "true",
+                checkItem: "true",
+              }}
+            />
+          </Box>{" "}
+        </>
+      )}
     </>
   );
 };

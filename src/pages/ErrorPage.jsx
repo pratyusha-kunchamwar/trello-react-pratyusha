@@ -1,7 +1,6 @@
-import React from "react";
 import { useNavigate } from "react-router-dom";
 
-export default function ErrorPage() {
+export default function ErrorPage({ message = "" }) {
   const navigate = useNavigate();
 
   return (
@@ -24,6 +23,7 @@ export default function ErrorPage() {
       </h1>
       <h2 style={{ fontSize: "2rem", marginBottom: "30px", color: "#000" }}>
         Page Not Found
+        {message && <span>: {message}</span>}
       </h2>
       <button
         onClick={() => navigate("/")}

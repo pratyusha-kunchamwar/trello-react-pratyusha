@@ -1,4 +1,3 @@
-import React from "react";
 import Card from "@mui/joy/Card";
 import ClearIcon from "@mui/icons-material/Clear";
 import Typography from "@mui/joy/Typography";

@@ -1,21 +1,13 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
-
-const {
-  VITE_API_KEY: API_KEY,
-  VITE_TOKEN: TOKEN,
-  VITE_BASE_URL: BASE_URL,
-} = import.meta.env;
+import { getBoards, addBoards } from "../services /boards";
 
 //fetch boards
 export const fetchBoards = createAsyncThunk(
   "fetchBoards",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axios.get(
-        `${BASE_URL}/members/me/boards?key=${API_KEY}&token=${TOKEN}`
-      );
-      return response.data;
+      const response = await getBoards();
+      return response;
     } catch (error) {
       return rejectWithValue("Error in fetching boards");
     }
@@ -27,13 +19,8 @@ export const createBoards = createAsyncThunk(
   "createBoards",
   async (boardName, { rejectWithValue }) => {
     try {
-      const response = await axios.post(
-        `${BASE_URL}/boards?key=${API_KEY}&token=${TOKEN}`,
-        {
-          name: boardName,
-        }
-      );
-      return response.data;
+      const response = await addBoards(boardName);
+      return response;
     } catch (error) {
       return rejectWithValue("Error in creating board");
     }

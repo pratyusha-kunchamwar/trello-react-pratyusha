@@ -17,7 +17,7 @@ export const fetchCards = createAsyncThunk(
       );
       return { listId, cards: response.data };
     } catch (error) {
-      return rejectWithValue("Error in fetching cards");
+      return rejectWithValue("Error in fetching cards",error);
     }
   }
 );
@@ -31,7 +31,7 @@ export const createCards = createAsyncThunk(
       );
       return { listId, cards: response.data };
     } catch (error) {
-      return rejectWithValue("Error in creating the cards");
+      return rejectWithValue("Error in creating the cards",error);
     }
   }
 );
@@ -40,12 +40,12 @@ export const deleteCards = createAsyncThunk(
   "deleteCards",
   async (id, { rejectWithValue }) => {
     try {
-      let response = await axios.delete(
+      await axios.delete(
         `${BASE_URL}/cards/${id}?key=${API_KEY}&token=${TOKEN}`
       );
       return id;
     } catch (error) {
-      return rejectWithValue("Error in Deleting the cards");
+      return rejectWithValue("Error in Deleting the cards",error);
     }
   }
 );
